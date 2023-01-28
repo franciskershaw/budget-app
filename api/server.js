@@ -13,7 +13,7 @@ app.listen(
   PORT,
   console.log('-----------------------------------------------'.yellow),
   console.log(
-    `Server running in ${process.env.NODE_ENV} mode on port ${PORT}`.italic
+    `Server running in ${process.env.NODE_ENV} mode on port ${PORT}`
       .yellow
   ),
   console.log('-----------------------------------------------'.yellow)
