@@ -1,0 +1,32 @@
+{
+  "name": "budget-app",
+  "version": "1.0.0",
+  "description": "Aiming to replicate our shared budge spreadsheet into a web application using Typsecript",
+  "main": "server.js",
+  "scripts": {
+    "start": "node api/server.js",
+    "server": "nodemon api/server.js",
+    "client": "npm run dev --prefix frontend",
+    "dev": "concurrently \"npm run server\" \"npm run client\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/franciskershaw/budget-app.git"
+  },
+  "author": "Francis Kershaw",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/franciskershaw/budget-app/issues"
+  },
+  "homepage": "https://github.com/franciskershaw/budget-app#readme",
+  "dependencies": {
+    "colors": "^1.4.0",
+    "connect-mongo": "^4.6.0",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "concurrently": "^7.4.0",
+    "nodemon": "^2.0.19"
+  }
+}
