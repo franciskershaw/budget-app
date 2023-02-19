@@ -14,8 +14,8 @@ const init = async () => {
   // LATER: Load plugins
   // EXAMPLE: await server.register(require('hapi-auth-jwt2'));
 
-  // LATER: Load routes
-  // EXAMPLE: await server.route(require('./routes'));
+  // Routes
+  server.route(require('./routes/userRoutes'));
 
   await server.start();
   console.log('-----------------------------------------------'.yellow);

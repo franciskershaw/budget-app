@@ -21,9 +21,11 @@
   "homepage": "https://github.com/franciskershaw/budget-app#readme",
   "dependencies": {
     "@hapi/hapi": "^21.3.0",
+    "bcryptjs": "^2.4.3",
     "colors": "^1.4.0",
     "connect-mongo": "^4.6.0",
     "dotenv": "^16.0.3",
+    "joi": "^17.8.1",
     "mongoose": "^6.9.0"
   },
   "devDependencies": {
