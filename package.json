@@ -20,10 +20,10 @@
   },
   "homepage": "https://github.com/franciskershaw/budget-app#readme",
   "dependencies": {
+    "@hapi/hapi": "^21.3.0",
     "colors": "^1.4.0",
     "connect-mongo": "^4.6.0",
     "dotenv": "^16.0.3",
-    "express": "^4.18.2",
     "mongoose": "^6.9.0"
   },
   "devDependencies": {
