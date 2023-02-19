@@ -1,9 +1,9 @@
 const bcrypt = require('bcryptjs');
 const Joi = require('joi');
+const Boom = require('@hapi/boom');
 const User = require('../models/User');
 
 async function registerUserHandler(request, h) {
-	console.log(h)
   // Define Joi schema for request validation
   const schema = Joi.object({
     username: Joi.string().alphanum().min(3).max(30).required(),
@@ -15,21 +15,30 @@ async function registerUserHandler(request, h) {
   const { error, value } = schema.validate(request.payload);
 
   if (error) {
-    return h.response(error.details[0]).code(400);
+    throw Boom.badRequest(error.details[0].message);
+  }
+
+  const userExists = await User.findOne({ email: request.payload.email });
+  if (userExists) {
+    throw Boom.badRequest('User already exists');
   }
 
   try {
     const { username, email, password } = request.payload;
-
+    console.log(username, email, password);
     // Hash the password before storing it in the database
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    const user = await User.create({ username, email, password: hashedPassword });
+    const user = await User.create({
+      username,
+      email,
+      password: hashedPassword,
+    });
     console.log(user);
     return h.response(user).code(201);
   } catch (error) {
-    return h.response(error).code(500);
+    throw Boom.internal('An internal server error occurred', error);
   }
 }
 
