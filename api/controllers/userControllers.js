@@ -42,6 +42,28 @@ const registerUserHandler = async (request, h) => {
   }
 };
 
+const loginUserHandler = async (request, h) => {
+  // Validate the user's credentials
+  const { email, password } = request.payload;
+  const user = await User.findOne({ email });
+
+  if (!user) {
+    throw Boom.unauthorized('Invalid email or password');
+  }
+
+  const isPasswordValid = await bcrypt.compare(password, user.password);
+
+  if (!isPasswordValid) {
+    throw Boom.unauthorized('Invalid email or password');
+  }
+
+  // Generate a token and return it to the user
+  const token = generateToken(user._id);
+
+  return { user, token };
+};
+
 module.exports = {
   registerUserHandler,
+  loginUserHandler,
 };
