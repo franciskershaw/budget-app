@@ -11,8 +11,6 @@ const connectDb = () => {
       .then((db) => {
         console.log('-------------------------------------------------------------'.cyan);
         console.log(`MongoDB Connected: ${db.connection.host}`.cyan);
-        console.log(
-          '-------------------------------------------------------------'.cyan);
         resolve(db);
       })
       .catch((err) => {

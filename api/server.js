@@ -4,6 +4,8 @@ const Hapi = require('@hapi/hapi');
 const connectDb = require('./config/db');
 require('dotenv').config();
 require('colors');
+const Jwt = require('hapi-auth-jwt2');
+const { validate } = require('./utils/auth');
 
 const init = async () => {
   const server = Hapi.server({
@@ -11,16 +13,26 @@ const init = async () => {
     host: 'localhost',
   });
 
-  // LATER: Load plugins
-  // EXAMPLE: await server.register(require('hapi-auth-jwt2'));
+  // Register plugins
+  await server.register(Jwt);
+
+  // Set the jwt authentication strategy
+  server.auth.strategy('jwt', 'jwt', {
+    key: process.env.JWT_SECRET,
+    validate,
+    verifyOptions: { algorithms: ['HS256'] },
+  });
+
+  // Set the default authentication strategy to jwt
+  server.auth.default('jwt');
 
   // Routes
   server.route(require('./routes/userRoutes'));
 
   await server.start();
-  console.log('-----------------------------------------------'.yellow);
+  
   console.log(`Server running in ${process.env.NODE_ENV} mode on ${server.info.uri}`.yellow);
-  console.log('-----------------------------------------------'.yellow);
+  console.log('-------------------------------------------------------------'.yellow);
 };
 
 process.on('unhandledRejection', (err) => {

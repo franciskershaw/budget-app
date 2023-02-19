@@ -3,7 +3,7 @@ const Joi = require('joi');
 const Boom = require('@hapi/boom');
 const User = require('../models/User');
 
-async function registerUserHandler(request, h) {
+const registerUserHandler = async (request, h) => {
   // Define Joi schema for request validation
   const schema = Joi.object({
     username: Joi.string().alphanum().min(3).max(30).required(),
@@ -12,7 +12,7 @@ async function registerUserHandler(request, h) {
   });
 
   // Validate request payload against schema
-  const { error, value } = schema.validate(request.payload);
+  const { error } = schema.validate(request.payload);
 
   if (error) {
     throw Boom.badRequest(error.details[0].message);
@@ -25,7 +25,6 @@ async function registerUserHandler(request, h) {
 
   try {
     const { username, email, password } = request.payload;
-    console.log(username, email, password);
     // Hash the password before storing it in the database
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
@@ -35,12 +34,12 @@ async function registerUserHandler(request, h) {
       email,
       password: hashedPassword,
     });
-    console.log(user);
+
     return h.response(user).code(201);
   } catch (error) {
     throw Boom.internal('An internal server error occurred', error);
   }
-}
+};
 
 module.exports = {
   registerUserHandler,
