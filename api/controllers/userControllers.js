@@ -2,6 +2,7 @@ const bcrypt = require('bcryptjs');
 const Joi = require('joi');
 const Boom = require('@hapi/boom');
 const User = require('../models/User');
+const { generateToken } = require('../utils/auth');
 
 const registerUserHandler = async (request, h) => {
   // Define Joi schema for request validation
@@ -35,7 +36,7 @@ const registerUserHandler = async (request, h) => {
       password: hashedPassword,
     });
 
-    return h.response(user).code(201);
+    return h.response({ user, token: generateToken(user._id) }).code(201);
   } catch (error) {
     throw Boom.internal('An internal server error occurred', error);
   }
