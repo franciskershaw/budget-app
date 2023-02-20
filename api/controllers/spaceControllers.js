@@ -9,14 +9,13 @@ const addSpaceHandler = async (request, h) => {
       name: Joi.string().min(3).max(30).required(),
     });
     const { error, value } = schema.validate(request.payload);
-		console.log({error, value})
+
     if (error) {
       throw Boom.badRequest(error.details[0].message);
     }
 
     // Get the user ID from the authenticated request credentials
     const userId = request.auth.credentials._id;
-		console.log(userId)
 
     // Create a new space with the validated name and user ID
     const space = new Space({
@@ -27,9 +26,44 @@ const addSpaceHandler = async (request, h) => {
     // Return a success response with the new space object
     return h.response(space).code(201);
   } catch (error) {
-		console.log(error)
+    console.log(error);
     throw Boom.boomify(error);
   }
 };
 
-module.exports = { addSpaceHandler };
+const updateSpaceHandler = async (request, h) => {
+  try {
+    const spaceId = request.params.spaceId;
+
+    // Validate the request payload with Joi
+    const schema = Joi.object({
+      name: Joi.string().min(3).max(30),
+    });
+    const { error, value } = schema.validate(request.payload);
+    if (error) {
+      throw Boom.badRequest(error.details[0].message);
+    }
+
+    // Find the existing space in the database by ID
+    const space = await Space.findById(spaceId);
+    if (!space) {
+      throw Boom.notFound(`Space with id ${spaceId} not found`);
+    }
+
+    // Update the name of the space with the new value, if present
+    if (value.name) {
+      space.name = value.name;
+    }
+
+    // Save the updated space to the database
+    await space.save();
+
+    // Return a success response with the updated space object
+    return h.response(space).code(200);
+  } catch (error) {
+    console.log(error);
+    throw Boom.boomify(error);
+  }
+};
+
+module.exports = { addSpaceHandler, updateSpaceHandler };
