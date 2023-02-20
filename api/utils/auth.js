@@ -12,6 +12,11 @@ const validate = async (decoded, request, h) => {
   return { isValid: true };
 };
 
+const checkResourceUser = async (resourceId, userId, Model) => {
+  const resource = await Model.findById(resourceId);
+  return resource && resource.user.toString() === userId;
+};
+
 // Generate token
 const generateToken = (id) => {
   return jwt.sign({ _id: id }, process.env.JWT_SECRET, {
@@ -19,4 +24,4 @@ const generateToken = (id) => {
   });
 };
 
-module.exports = { validate, generateToken };
+module.exports = { validate, generateToken, checkResourceUser };

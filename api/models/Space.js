@@ -18,9 +18,11 @@ const SpaceSchema = mongoose.Schema({
   ],
 });
 
-SpaceSchema.post('save', async function (doc) {
-  const User = require('./User');
-  await User.findByIdAndUpdate(doc.user, { $push: { spaces: doc._id } });
+SpaceSchema.pre('save', async function () {
+  if (this.isNew) {
+    const User = require('./User');
+    await User.findByIdAndUpdate(this.user, { $push: { spaces: this._id } });
+  }
 });
 
 module.exports = mongoose.model('Space', SpaceSchema);
