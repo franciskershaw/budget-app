@@ -1,13 +1,13 @@
 const {
-  registerUserHandler,
-  loginUserHandler,
-} = require('../controllers/userControllers');
+  registerUser,
+  loginUser,
+} = require('../handlers/userHandlers');
 
 const userRoutes = [
   {
     method: 'POST',
     path: '/api/users',
-    handler: registerUserHandler,
+    handler: registerUser,
     options: {
       auth: false,
     },
@@ -15,7 +15,7 @@ const userRoutes = [
   {
     method: 'POST',
     path: '/api/users/login',
-    handler: loginUserHandler,
+    handler: loginUser,
     options: {
       auth: false,
     },

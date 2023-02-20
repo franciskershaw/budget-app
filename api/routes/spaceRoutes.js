@@ -1,24 +1,24 @@
 const {
-  addSpaceHandler,
-  updateSpaceHandler,
-	deleteSpaceHandler
-} = require('../controllers/spaceControllers');
+  addSpace,
+  updateSpace,
+  deleteSpace,
+} = require('../handlers/spaceHandlers');
 
 const spaceRoutes = [
   {
     method: 'POST',
     path: '/api/spaces',
-    handler: addSpaceHandler,
+    handler: addSpace,
   },
   {
     method: 'PUT',
     path: '/api/spaces/{spaceId}',
-    handler: updateSpaceHandler,
+    handler: updateSpace,
   },
   {
     method: 'DELETE',
     path: '/api/spaces/{spaceId}',
-    handler: deleteSpaceHandler,
+    handler: deleteSpace,
   },
 ];
 

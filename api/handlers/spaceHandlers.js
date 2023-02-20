@@ -3,7 +3,7 @@ const Boom = require('@hapi/boom');
 const Space = require('../models/Space');
 const { checkResourceUser } = require('../utils/auth');
 
-const addSpaceHandler = async (request, h) => {
+const addSpace = async (request, h) => {
   try {
     // Validate the request payload with Joi
     const schema = Joi.object({
@@ -32,7 +32,7 @@ const addSpaceHandler = async (request, h) => {
   }
 };
 
-const updateSpaceHandler = async (request, h) => {
+const updateSpace = async (request, h) => {
   try {
     const spaceId = request.params.spaceId;
     const userId = request.auth.credentials._id;
@@ -74,7 +74,7 @@ const updateSpaceHandler = async (request, h) => {
   }
 };
 
-const deleteSpaceHandler = async (request, h) => {
+const deleteSpace = async (request, h) => {
   try {
     const spaceId = request.params.spaceId;
     const userId = request.auth.credentials._id;
@@ -101,4 +101,4 @@ const deleteSpaceHandler = async (request, h) => {
   }
 };
 
-module.exports = { addSpaceHandler, updateSpaceHandler, deleteSpaceHandler };
+module.exports = { addSpace, updateSpace, deleteSpace };

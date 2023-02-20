@@ -4,7 +4,7 @@ const Boom = require('@hapi/boom');
 const User = require('../models/User');
 const { generateToken } = require('../utils/auth');
 
-const registerUserHandler = async (request, h) => {
+const registerUser = async (request, h) => {
   // Define Joi schema for request validation
   const schema = Joi.object({
     username: Joi.string().alphanum().min(3).max(30).required(),
@@ -42,7 +42,7 @@ const registerUserHandler = async (request, h) => {
   }
 };
 
-const loginUserHandler = async (request, h) => {
+const loginUser = async (request, h) => {
   // Validate the user's credentials
   const { email, password } = request.payload;
   const user = await User.findOne({ email });
@@ -64,6 +64,6 @@ const loginUserHandler = async (request, h) => {
 };
 
 module.exports = {
-  registerUserHandler,
-  loginUserHandler,
+  registerUser,
+  loginUser,
 };
