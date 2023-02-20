@@ -46,7 +46,7 @@ const updateSpaceHandler = async (request, h) => {
       throw Boom.badRequest(error.details[0].message);
     }
 
-		// Find the existing space in the database by ID
+    // Find the existing space in the database by ID
     const space = await Space.findById(spaceId);
     if (!space) {
       throw Boom.notFound(`Space with id ${spaceId} not found`);
@@ -69,9 +69,36 @@ const updateSpaceHandler = async (request, h) => {
     // Return a success response with the updated space object
     return h.response(space).code(200);
   } catch (error) {
-		// console.log(error)
+    // console.log(error)
     throw Boom.boomify(error);
   }
 };
 
-module.exports = { addSpaceHandler, updateSpaceHandler };
+const deleteSpaceHandler = async (request, h) => {
+  try {
+    const spaceId = request.params.spaceId;
+    const userId = request.auth.credentials._id;
+
+    // Find the existing space in the database by ID
+    const space = await Space.findById(spaceId);
+    if (!space) {
+      throw Boom.notFound(`Space with id ${spaceId} not found`);
+    }
+
+    // Check if the user is the owner of the space being updated
+    const isOwner = await checkResourceUser(spaceId, userId, Space);
+    if (!isOwner) {
+      throw Boom.unauthorized('You are not authorized to update this space');
+    }
+
+    // Delete space
+    await space.remove();
+
+    // Return successful response
+    return h.response().code(204);
+  } catch (error) {
+    throw Boom.boomify(error);
+  }
+};
+
+module.exports = { addSpaceHandler, updateSpaceHandler, deleteSpaceHandler };

@@ -25,4 +25,9 @@ SpaceSchema.pre('save', async function () {
   }
 });
 
+SpaceSchema.post('remove', async function (doc) {
+  const User = require('./User');
+  await User.findByIdAndUpdate(doc.user, { $pull: { spaces: doc._id } });
+});
+
 module.exports = mongoose.model('Space', SpaceSchema);
