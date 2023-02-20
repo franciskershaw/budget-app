@@ -28,6 +28,7 @@ const init = async () => {
 
   // Routes
   server.route(require('./routes/userRoutes'));
+  server.route(require('./routes/spaceRoutes'));
 
   await server.start();
   
