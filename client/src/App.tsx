@@ -5,15 +5,13 @@ import SharedLayout from './layout/SharedLayout';
 
 function App(): ReactElement {
   return (
-    <div>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<SharedLayout />}>
-            <Route index element={<LoginPage />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<SharedLayout />}>
+          <Route index element={<LoginPage />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
   );
 }
 

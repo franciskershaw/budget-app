@@ -4,11 +4,11 @@ import { ReactElement } from 'react';
 const SharedLayout = (): ReactElement => {
   return (
     <>
-      <nav>Navbar</nav>
+      {/* <nav>Navbar</nav> */}
       <main>
         <Outlet />
       </main>
-      <footer>Footer</footer>
+      {/* <footer>Footer</footer> */}
     </>
   );
 };
