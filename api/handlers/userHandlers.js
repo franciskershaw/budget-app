@@ -36,7 +36,16 @@ const registerUser = async (request, h) => {
       password: hashedPassword,
     });
 
-    return h.response({ user, token: generateToken(user._id) }).code(201);
+    return h
+      .response({
+        userInfo: {
+          username: user.username,
+          email: user.email,
+          spaces: user.spaces,
+        },
+        token: generateToken(user._id),
+      })
+      .code(201);
   } catch (error) {
     throw Boom.internal('An internal server error occurred', error);
   }
@@ -60,7 +69,14 @@ const loginUser = async (request, h) => {
   // Generate a token and return it to the user
   const token = generateToken(user._id);
 
-  return { user, token };
+  return {
+    userInfo: {
+      username: user.username,
+      email: user.email,
+      spaces: user.spaces,
+    },
+    token,
+  };
 };
 
 module.exports = {
