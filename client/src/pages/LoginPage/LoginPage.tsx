@@ -1,32 +1,40 @@
 import { FC, ReactElement, useState } from 'react';
-
-interface LoginPageState {
-  username: string;
-  password: string;
-}
+import { LoginFormData } from '../../types/types';
+import { useAuth } from '../../hooks/auth/useAuth';
 
 const LoginPage: FC = (): ReactElement => {
-  const [formData, setFormData] = useState<LoginPageState>({
-    username: '',
+  const [formData, setFormData] = useState<LoginFormData>({
+    email: '',
     password: '',
   });
 
+  const { login } = useAuth();
+
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData((prevState) => ({
+    setFormData((prevState: LoginFormData) => ({
       ...prevState,
       [e.target.name]: e.target.value,
     }));
   };
 
+  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    login(formData);
+    setFormData({
+      email: '',
+      password: '',
+    });
+  };
+
   return (
     <div className="h-screen flex justify-center items-center">
-      <form className="border border-black">
+      <form onSubmit={onSubmit} className="border border-black">
         <h1 className="text-center">Log in to Budget App</h1>
         <div>
-          <label htmlFor="">Username</label>
+          <label htmlFor="">Email</label>
           <input
-            name="username"
-            value={formData.username}
+            name="email"
+            value={formData.email}
             onChange={onChange}
             className="border"
             type="text"
