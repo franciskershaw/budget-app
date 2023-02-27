@@ -21,7 +21,7 @@ const registerUser = async (request, h) => {
 
   const userExists = await User.findOne({ email: request.payload.email });
   if (userExists) {
-    throw Boom.badRequest('User already exists');
+    throw Boom.conflict('User already exists');
   }
 
   try {

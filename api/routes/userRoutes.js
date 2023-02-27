@@ -6,7 +6,7 @@ const {
 const userRoutes = [
   {
     method: 'POST',
-    path: '/api/users',
+    path: '/api/users/',
     handler: registerUser,
     options: {
       auth: false,
