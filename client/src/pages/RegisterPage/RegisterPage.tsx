@@ -1,30 +1,41 @@
 import { FC, ReactElement, useRef, useState } from 'react';
-import { RegisterFormData } from '../../types/types';
+import { RegisterFormState } from '../../types/types';
+import { useAuth } from '../../hooks/auth/useAuth';
 
 const RegisterPage: FC = (): ReactElement => {
-  const [formData, setFormData] = useState<RegisterFormData>({
+  const [formData, setFormData] = useState<RegisterFormState>({
     email: '',
     username: '',
     password: '',
     confirmPassword: '',
   });
+  const { email, username, password, confirmPassword } = formData;
+
+  const { register } = useAuth();
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData((prevState: RegisterFormData) => ({
+    setFormData((prevState: RegisterFormState) => ({
       ...prevState,
       [e.target.name]: e.target.value,
     }));
   };
 
-	const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-		e.preventDefault();
-	}
+  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    if (password !== confirmPassword) {
+      console.log('passwords do not match');
+    } else {
+      const userData = { email, username, password };
+      register(userData);
+    }
+  };
 
   return (
     <div>
       <section className="h-screen flex justify-center items-center">
         <form onSubmit={onSubmit} className="border border-black">
-          <h1 className="text-center">Log in to Budget App</h1>
+          <h1 className="text-center">Register to use Budget App</h1>
           <div>
             <label htmlFor="email">Email</label>
             <input

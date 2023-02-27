@@ -15,5 +15,8 @@ export interface LoginFormData {
 
 export interface RegisterFormData extends LoginFormData {
   username: string,
-  confirmPassword: string;
+}
+
+export interface RegisterFormState extends RegisterFormData {
+  confirmPassword: string
 }
