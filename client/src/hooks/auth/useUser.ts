@@ -5,8 +5,6 @@ import { User } from '../../types/types';
 export function useUser() {
   const queryClient = useQueryClient();
 
-	
-
   // called from useAuth
   function updateUser(newUser: User) {
     queryClient.setQueryData([queryKeys.user], newUser);
@@ -14,7 +12,6 @@ export function useUser() {
 
   function clearUser() {
     queryClient.setQueryData([queryKeys.user], null);
-    clearCookieToken();
   }
 
   return { updateUser, clearUser };

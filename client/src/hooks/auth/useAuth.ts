@@ -5,23 +5,26 @@
 import { LoginFormData, RegisterFormData, User } from '../../types/types';
 import { setCookieToken, clearCookieToken } from './useUser';
 import api from '../../axios/api';
+import { useUser } from './useUser';
 
 export function useAuth() {
+  const { updateUser } = useUser();
   const register = async (formData: RegisterFormData) => {
     try {
-      const response = await api.post('/users/', formData);
-      console.log(response);
-      return response.data
+      const { data } = await api.post('/users/', formData);
+      console.log(data);
+      updateUser(data);
+      return data;
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
   };
 
   const login = async (formData: LoginFormData) => {
     try {
-      const response = await api.post('/users/login', formData);
-      console.log(response);
-      setCookieToken(response.data.token);
+      const { data } = await api.post('/users/login', formData);
+      console.log(data);
+      updateUser(data);
     } catch (error) {
       console.log(error);
     }
