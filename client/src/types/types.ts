@@ -1,6 +1,6 @@
 export interface User {
   userInfo: {
-    _id: string,
+    _id: string;
     username: string;
     email: string;
     spaces: string[];
@@ -11,4 +11,9 @@ export interface User {
 export interface LoginFormData {
   email: string;
   password: string;
+}
+
+export interface RegisterFormData extends LoginFormData {
+  username: string,
+  confirmPassword: string;
 }
