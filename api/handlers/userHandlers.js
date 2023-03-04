@@ -2,7 +2,11 @@ const bcrypt = require('bcryptjs');
 const Joi = require('joi');
 const Boom = require('@hapi/boom');
 const User = require('../models/User');
-const { generateToken } = require('../utils/auth');
+const {
+  generateToken,
+  generateAccessToken,
+  generateRefreshToken,
+} = require('../utils/auth');
 
 const registerUser = async (request, h) => {
   // Define Joi schema for request validation
@@ -36,6 +40,18 @@ const registerUser = async (request, h) => {
       password: hashedPassword,
     });
 
+    // Add refresh token to browser cookie
+    const refreshToken = generateRefreshToken(user._id);
+    h.state('refreshToken', refreshToken, {
+      encoding: 'none',
+      path: '/',
+      ttl: 30 * 24 * 60 * 60 * 1000, // 30 days
+      isSecure: process.env.NODE_ENV === 'production',
+      isHttpOnly: true,
+      clearInvalid: true,
+      strictHeader: true,
+    });
+
     return h
       .response({
         userInfo: {
@@ -43,7 +59,7 @@ const registerUser = async (request, h) => {
           email: user.email,
           spaces: user.spaces,
         },
-        token: generateToken(user._id),
+        token: generateAccessToken(user._id),
       })
       .code(201);
   } catch (error) {
@@ -57,17 +73,26 @@ const loginUser = async (request, h) => {
   const user = await User.findOne({ email });
 
   if (!user) {
-    throw Boom.unauthorized('Invalid email or password');
+    throw Boom.badRequest('Invalid email or password');
   }
 
   const isPasswordValid = await bcrypt.compare(password, user.password);
 
   if (!isPasswordValid) {
-    throw Boom.unauthorized('Invalid email or password');
+    throw Boom.badRequest('Invalid email or password');
   }
 
-  // Generate a token and return it to the user
-  const token = generateToken(user._id);
+  // Add refresh token to browser cookie
+  const refreshToken = generateRefreshToken(user._id);
+  h.state('refreshToken', refreshToken, {
+    encoding: 'none',
+    path: '/',
+    ttl: 30 * 24 * 60 * 60 * 1000, // 30 days
+    isSecure: process.env.NODE_ENV === 'production',
+    isHttpOnly: true,
+    clearInvalid: true,
+    strictHeader: true,
+  });
 
   return {
     userInfo: {
@@ -75,7 +100,7 @@ const loginUser = async (request, h) => {
       email: user.email,
       spaces: user.spaces,
     },
-    token,
+    token: generateAccessToken(user._id),
   };
 };
 

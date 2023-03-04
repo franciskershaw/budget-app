@@ -24,4 +24,22 @@ const generateToken = (id) => {
   });
 };
 
-module.exports = { validate, generateToken, checkResourceUser };
+const generateAccessToken = (id) => {
+  return jwt.sign({ _id: id }, process.env.ACCESS_TOKEN_SECRET, {
+    expiresIn: '15m',
+  });
+};
+
+const generateRefreshToken = (id) => {
+  return jwt.sign({ _id: id }, process.env.REFRESH_TOKEN_SECRET, {
+    expiresIn: '30d',
+  });
+};
+
+module.exports = {
+  validate,
+  checkResourceUser,
+  generateToken,
+  generateAccessToken,
+  generateRefreshToken,
+};
