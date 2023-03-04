@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs');
 const Joi = require('joi');
 const Boom = require('@hapi/boom');
+const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const {
   generateToken,
@@ -104,7 +105,23 @@ const loginUser = async (request, h) => {
   };
 };
 
+const checkRefreshToken = async (request, h) => {
+  const cookies = request.state;
+  if (!cookies?.refreshToken) throw Boom.unauthorized('No refresh token');
+  const refreshToken = cookies.refreshToken;
+
+  try {
+    const { _id } = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+    const accessToken = generateAccessToken(_id);
+    return h.response({ token: accessToken, _id });
+  } catch (error) {
+    h.unstate('refreshToken');
+    throw Boom.unauthorized('Issues validating the token');
+  }
+};
+
 module.exports = {
   registerUser,
   loginUser,
+  checkRefreshToken,
 };
