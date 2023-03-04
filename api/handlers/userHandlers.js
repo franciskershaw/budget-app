@@ -105,6 +105,17 @@ const loginUser = async (request, h) => {
   };
 };
 
+const logoutUser = async (request, h) => {
+  h.unstate('refreshToken', {
+    path: '/',
+    isHttpOnly: true,
+    isSecure: process.env.NODE_ENV === 'production',
+    clearInvalid: true,
+    strictHeader: true,
+  });
+  return h.response({ message: 'User logged out' }).code(200);
+};
+
 const checkRefreshToken = async (request, h) => {
   const cookies = request.state;
   if (!cookies?.refreshToken) throw Boom.unauthorized('No refresh token');
@@ -123,5 +134,6 @@ const checkRefreshToken = async (request, h) => {
 module.exports = {
   registerUser,
   loginUser,
+  logoutUser,
   checkRefreshToken,
 };

@@ -1,6 +1,7 @@
 const {
   registerUser,
   loginUser,
+  logoutUser,
   checkRefreshToken,
 } = require('../handlers/userHandlers');
 
@@ -17,6 +18,14 @@ const userRoutes = [
     method: 'POST',
     path: '/api/users/login',
     handler: loginUser,
+    options: {
+      auth: false,
+    },
+  },
+  {
+    method: 'POST',
+    path: '/api/users/logout',
+    handler: logoutUser,
     options: {
       auth: false,
     },
