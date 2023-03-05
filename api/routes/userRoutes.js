@@ -3,6 +3,7 @@ const {
   loginUser,
   logoutUser,
   checkRefreshToken,
+  // getUser,
 } = require('../handlers/userHandlers');
 
 const userRoutes = [
@@ -38,6 +39,12 @@ const userRoutes = [
       auth: false,
     },
   },
+  // TODO LATER - getUser handler and endpoint
+  // {
+  //   method: 'GET',
+  //   path: '/api/users/{userId}',
+  //   handler: getUser,
+  // },
 ];
 
 module.exports = userRoutes;

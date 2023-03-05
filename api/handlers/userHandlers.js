@@ -64,7 +64,7 @@ const registerUser = async (request, h) => {
       })
       .code(201);
   } catch (error) {
-    throw Boom.internal('An internal server error occurred', error);
+    throw Boom.boomify(error);
   }
 };
 
@@ -126,7 +126,7 @@ const checkRefreshToken = async (request, h) => {
   }
 
   try {
-    const { _id } = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+    const { _id } = jwt.verify(cookies.refreshToken, process.env.REFRESH_TOKEN_SECRET);
     const accessToken = generateAccessToken(_id);
     return h.response({ token: accessToken, _id });
   } catch (error) {
@@ -135,9 +135,31 @@ const checkRefreshToken = async (request, h) => {
   }
 };
 
+// TODO LATER - getUser handler and endpoint
+// const getUser = async (request, h) => {
+//   try {
+//     if (!request.params.userId) {
+//       throw Boom.notFound('User not found')
+//     }
+//     const user = await User.findById(req.params.userId)
+//     console.log(user)
+//     return {
+//       userInfo: {
+//           username: user.username,
+//           email: user.email,
+//           spaces: user.spaces,
+//         },
+//         token: generateAccessToken(user._id),
+//       }
+//   } catch (error) {
+//     throw Boom.boomify(error);
+//   }
+// }
+
 module.exports = {
   registerUser,
   loginUser,
   logoutUser,
   checkRefreshToken,
+  // getUser
 };
