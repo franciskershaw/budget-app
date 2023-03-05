@@ -1,6 +1,8 @@
-import { FC, ReactElement, useState } from 'react';
+import { FC, ReactElement, useState, useEffect } from 'react';
 import { LoginFormData } from '../../types/types';
 import { useAuth } from '../../hooks/auth/useAuth';
+import { useUser } from '../../hooks/auth/useUser';
+import { useNavigate } from 'react-router-dom';
 
 const LoginPage: FC = (): ReactElement => {
   const [formData, setFormData] = useState<LoginFormData>({
@@ -8,7 +10,15 @@ const LoginPage: FC = (): ReactElement => {
     password: '',
   });
 
+  const navigate = useNavigate();
   const { signin } = useAuth();
+  const { user } = useUser();
+
+  useEffect(() => {
+    if (user) {
+      return navigate('/spaces')
+    }
+  }, [user]);
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData((prevState: LoginFormData) => ({

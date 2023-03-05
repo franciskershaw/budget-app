@@ -1,6 +1,8 @@
-import { FC, ReactElement, useRef, useState } from 'react';
+import { FC, ReactElement, useState, useEffect } from 'react';
 import { RegisterFormState } from '../../types/types';
 import { useAuth } from '../../hooks/auth/useAuth';
+import { useUser } from '../../hooks/auth/useUser';
+import { useNavigate } from 'react-router-dom';
 
 const RegisterPage: FC = (): ReactElement => {
   const [formData, setFormData] = useState<RegisterFormState>({
@@ -11,7 +13,15 @@ const RegisterPage: FC = (): ReactElement => {
   });
   const { email, username, password, confirmPassword } = formData;
 
-  const { register } = useAuth();
+  const navigate = useNavigate();
+  const { signup } = useAuth();
+  const { user } = useUser();
+
+  useEffect(() => {
+    if (user) {
+      return navigate('/spaces')
+    }
+  }, [user]);
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData((prevState: RegisterFormState) => ({
@@ -27,7 +37,7 @@ const RegisterPage: FC = (): ReactElement => {
       console.log('passwords do not match');
     } else {
       const userData = { email, username, password };
-      register(userData);
+      signup(userData);
     }
   };
 
