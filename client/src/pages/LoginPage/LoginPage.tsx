@@ -8,7 +8,7 @@ const LoginPage: FC = (): ReactElement => {
     password: '',
   });
 
-  const { login } = useAuth();
+  const { signin } = useAuth();
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData((prevState: LoginFormData) => ({
@@ -19,7 +19,7 @@ const LoginPage: FC = (): ReactElement => {
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    login(formData);
+    signin(formData);
     setFormData({
       email: '',
       password: '',

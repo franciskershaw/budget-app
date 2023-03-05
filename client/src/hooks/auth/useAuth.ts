@@ -1,38 +1,65 @@
-/* 
-  TEMP NOTE - useAuth will not be using react query 
-  to do anything, bear that in mind. 
-*/
-import { LoginFormData, RegisterFormData, User } from '../../types/types';
-import { setCookieToken, clearCookieToken } from './useUser';
-import api from '../../axios/api';
 import { useUser } from './useUser';
+import useAxios from '../axios/useAxios';
+import { User } from '../../types/types';
 
-export function useAuth() {
-  const { updateUser } = useUser();
-  const register = async (formData: RegisterFormData) => {
+interface UseAuthResponse {
+  signin: (userData: {
+    email: string;
+    password: string;
+  }) => Promise<User | null>;
+  signup: (userData: {
+    username: string;
+    email: string;
+    password: string;
+  }) => Promise<User | null>;
+  signout: () => void;
+}
+
+export function useAuth(): UseAuthResponse {
+  const { clearUser, updateUser } = useUser();
+  const api = useAxios();
+
+  async function signin(userData: {
+    email: string;
+    password: string;
+  }): Promise<User | null> {
     try {
-      const { data } = await api.post('/users/', formData);
-      console.log(data);
-      updateUser(data);
-      return data;
+      const response = await api.post<User>('/api/users/login', userData);
+      updateUser(response.data);
+      return response.data;
     } catch (error) {
-      console.log(error);
+      if (error) {
+        console.log(error);
+      }
+      return null;
     }
-  };
+  }
 
-  const login = async (formData: LoginFormData) => {
+  async function signup(userData: {
+    username: string;
+    email: string;
+    password: string;
+  }): Promise<User | null> {
     try {
-      const { data } = await api.post('/users/login', formData);
-      console.log(data);
-      updateUser(data);
+      const response = await api.post<User>('/api/users/', userData);
+      updateUser(response.data);
+
+      return response.data;
     } catch (error) {
-      console.log(error);
+      if (error) {
+        console.log(error);
+      }
+      return null;
     }
-  };
+  }
 
-  const logout = () => {
-    clearCookieToken();
-  };
+  function signout() {
+    clearUser();
+  }
 
-  return { register, login, logout };
+  return {
+    signin,
+    signup,
+    signout,
+  };
 }

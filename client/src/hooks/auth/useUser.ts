@@ -1,26 +1,38 @@
 import { useQueryClient, useQuery } from '@tanstack/react-query';
+import useAxios from '../axios/useAxios';
 import { queryKeys } from '../../reactQuery/queryKeys';
+import { useUserRequests } from '../requests/useUserRequests';
 import { User } from '../../types/types';
 
-export function useUser() {
+interface UseUserResponse {
+  user: User | null;
+  fetchingUser: boolean;
+  updateUser: (newUser: User) => void;
+  clearUser: () => Promise<void>;
+}
+
+export function useUser(): UseUserResponse {
+  const api = useAxios();
   const queryClient = useQueryClient();
+  const { getUser } = useUserRequests();
 
-  // called from useAuth
+  const { data: user, isFetching: fetchingUser } = useQuery<User | null>(
+    [queryKeys.user],
+    () => getUser(null),
+  );
+
   function updateUser(newUser: User) {
-    queryClient.setQueryData([queryKeys.user], newUser);
+    queryClient.setQueryData<User | null>([queryKeys.user], newUser);
   }
 
-  function clearUser() {
-    queryClient.setQueryData([queryKeys.user], null);
+  async function clearUser() {
+    try {
+      await api.post('/api/users/logout');
+      queryClient.setQueryData<User | null>([queryKeys.user], null);
+    } catch (error) {
+      console.error('Error clearing refreshToken cookie:', error);
+    }
   }
 
-  return { updateUser, clearUser };
-}
-
-export function setCookieToken(token: string) {
-  document.cookie = `token=${token}; Secure; SameSite=Strict;`;
-}
-
-export function clearCookieToken() {
-  document.cookie = 'token=; Secure; SameSite=Strict; max-age=0;';
+  return { user: user ?? null, fetchingUser, updateUser, clearUser };
 }
