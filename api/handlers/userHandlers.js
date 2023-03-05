@@ -118,8 +118,12 @@ const logoutUser = async (request, h) => {
 
 const checkRefreshToken = async (request, h) => {
   const cookies = request.state;
-  if (!cookies?.refreshToken) throw Boom.unauthorized('No refresh token');
-  const refreshToken = cookies.refreshToken;
+
+  if (!cookies?.refreshToken) {
+    const error = Boom.unauthorized('No refresh token');
+    error.output.payload.errorCode = 'NO_REFRESH_TOKEN';
+    throw error;
+  }
 
   try {
     const { _id } = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
